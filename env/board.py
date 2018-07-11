@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class Board(object):
+class Board:
     """
     初始化棋盘类
     """
@@ -17,15 +17,15 @@ class Board(object):
         self.n_in_row = int(kwargs.get('n_in_row', 5))  # 多少颗棋子连成一排能赢，五指棋默认是5颗
         self.players = [1, 2]  # 新建两个玩家
 
-    def init_borad(self, start_player=0):
+    def init_board(self, start_player=0):
         """
         根据类的初始化值，初始化board
         :param start_player:
         :return:
         """
         if self.width < self.n_in_row or self.height < self.n_in_row:
-            print('棋盘高度或者宽度不足，无法进行游戏！')
-            return
+            raise Exception('board width and height can not be '
+                            'less than {}'.format(self.n_in_row))
         self.current_player = self.players[start_player]
         self.availables = list(range(self.width * self.height))  # 将所有位置初始化后用list存成一排
         self.states = {}

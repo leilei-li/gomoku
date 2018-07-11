@@ -1,38 +1,10 @@
 import pickle
 from env.board import Board
 from env.game import Game
-
-from agent.mcts_alphaZero import MCTSPlayer
+from player.human_player import HumanPlayer
+from player.MCTS_player import MCTSPlayer
 from agent.policy_value_net_tensorflow import PolicyValueNet
-
-
-class Human:
-    """
-    通过控制台输入当前坐标与agent进行游戏
-    """
-
-    def __init__(self):
-        self.player = None
-
-    def set_player_ind(self, p):
-        self.player = p
-
-    def get_action(self, board):
-        try:
-            location = input("Your move (y,x): ")
-            if isinstance(location, str):  # for python3
-                location = [int(n, 10) for n in location.split(",")]
-            move = board.location_to_move(location)  # 将location转化为一维的move
-        except Exception as e:
-            move = -1
-        if move == -1 or move not in board.availables:
-            # 判断输入的location是否合理
-            print("invalid move, input (y,x) again")
-            move = self.get_action(board)
-        return move
-
-    def __str__(self):
-        return "Human {}".format(self.player)
+from agent.policy_value_net_numpy import PolicyValueNetNumpy
 
 
 def run(model_file):
@@ -57,7 +29,7 @@ def run(model_file):
         best_policy = PolicyValueNet(width, height)
         mcts_player = MCTSPlayer(best_policy.policy_value_fn,
                                  c_puct=5,
-                                 n_playout=400)  # set larger n_playout for better performance
+                                 n_playout=2000)  # set larger n_playout for better performance
         mcts_player2 = MCTSPlayer(best_policy.policy_value_fn,
                                   c_puct=5,
                                   n_playout=400)
@@ -66,10 +38,10 @@ def run(model_file):
         # mcts_player = MCTS_Pure(c_puct=5, n_playout=1000)
 
         # human player, input your move in the format: 2,3
-        human = Human()
+        human = HumanPlayer()
 
         # set start_player=0 for human first
-        game.start_play(mcts_player2, mcts_player, start_player=1, is_shown=1)
+        game.start_play(mcts_player, mcts_player2, start_player=1, is_shown=1)
     except KeyboardInterrupt:
         print('\n\rquit')
 

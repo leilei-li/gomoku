@@ -7,9 +7,10 @@ from agent.policy_value_net_tensorflow import PolicyValueNet
 from agent.policy_value_net_numpy import PolicyValueNetNumpy
 
 
-def run(model_file):
-    n = 5
-    width, height = 8, 8
+def run(model_file, width=8, height=8, n=5):
+    n = n
+    width = width
+    height = height
     try:
         board = Board(width=width, height=height, n_in_row=n)
         game = Game(board)
@@ -24,9 +25,12 @@ def run(model_file):
         try:
             policy_param = pickle.load(open(model_file, 'rb'))
         except:
-            policy_param = pickle.load(open(model_file, 'rb'),
-                                       encoding='bytes')  # To support python3
-        best_policy = PolicyValueNet(width, height)
+            try:
+                policy_param = pickle.load(open(model_file, 'rb'),
+                                           encoding='bytes')  # To support python3
+            except:
+                pass
+        best_policy = PolicyValueNet(width, height, model_file=model_file)
         mcts_player = MCTSPlayer(best_policy.policy_value_fn,
                                  c_puct=5,
                                  n_playout=2000)  # set larger n_playout for better performance
@@ -41,7 +45,7 @@ def run(model_file):
         human = HumanPlayer()
 
         # set start_player=0 for human first
-        game.start_play(mcts_player, mcts_player2, start_player=1, is_shown=1)
+        game.start_play(human, mcts_player2, start_player=0, is_shown=1)
     except KeyboardInterrupt:
         print('\n\rquit')
 

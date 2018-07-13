@@ -21,18 +21,20 @@ def softmax(x):
 class TreeNode:
     """
     蒙特卡洛树的树结点的类,
-    每个结点用自己的Q值，先验概率P，访问计数值(visit-count-adjusted prior score):U
+    每个结点用自己的Q值，
+    先验概率P，
+    访问计数值(visit-count-adjusted prior score):U
     U值的计算公式：U(s,a)=c_{puct}P(s,a)\frac{\sqrt{\sum_bN(s,b)}}{1+N(s,a)}
     详情可以参考Alphazero的论文
     """
 
     def __init__(self, parent, prior_p):
-        self._parent = parent
+        self._parent = parent  # 父结点
         self._children = {}  # 子结点，代表动作，即落子动作
         self._n_visits = 0  # 结点访问次数
-        self._Q = 0
-        self._u = 0
-        self._P = prior_p
+        self._Q = 0  # Q值
+        self._u = 0  # U值
+        self._P = prior_p  # 先验概率
 
     def expand(self, action_priors):
         """
@@ -42,7 +44,7 @@ class TreeNode:
         """
         for action, prob in action_priors:
             if action not in self._children:
-                self._children[action] = TreeNode(self, prob)
+                self._children[action] = TreeNode(self, prob)  # 父结点是self，先验概率prob
 
     def select(self, c_puct):
         """

@@ -37,7 +37,7 @@ class TrainPipeline:
         self.epochs = 5  # num of train_steps for each update
         self.kl_targ = 0.02
         self.check_freq = 50  # 一个间隔，取模为0时存储模型到硬盘
-        self.game_batch_num = 1500  # 最多进行1500局游戏
+        self.game_batch_num = 10000  # 最多进行10000局游戏
         self.best_win_ratio = 0.0
 
         # agent的对手，纯粹的mcts算法产生的棋手
@@ -155,7 +155,7 @@ class TrainPipeline:
         #                 explained_var_new))
         return loss, entropy
 
-    def policy_evaluate(self, n_games=100):
+    def policy_evaluate(self, n_games=50):
         """
             与单纯的MCTS_Pure进行对抗训练，来监控当前策略的好坏
         :param n_games:
@@ -199,7 +199,7 @@ class TrainPipeline:
                     win_ratio = self.policy_evaluate()
                     self.policy_value_net.save_model('model/current_policy.model')
                     if win_ratio > self.best_win_ratio:
-                        self.logger.info('update new best policy, win_ratio:', win_ratio)
+                        self.logger.info('update new best policy, win_ratio: ' + str(win_ratio))
                         self.best_win_ratio = win_ratio
                         # update the best_policy
                         self.policy_value_net.save_model('model/best_policy.model')

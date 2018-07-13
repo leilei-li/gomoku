@@ -209,7 +209,7 @@ class TrainPipeline:
                             self.best_win_ratio = 0.0
         except KeyboardInterrupt:
             print('\n\rquit')
-            self.logger.info('\n\rquit')
+            self.logger.info('quit')
 
 
 if __name__ == '__main__':

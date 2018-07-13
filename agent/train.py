@@ -155,7 +155,7 @@ class TrainPipeline:
         #                 explained_var_new))
         return loss, entropy
 
-    def policy_evaluate(self, n_games=10):
+    def policy_evaluate(self, n_games=100):
         """
             与单纯的MCTS_Pure进行对抗训练，来监控当前策略的好坏
         :param n_games:
@@ -199,7 +199,7 @@ class TrainPipeline:
                     win_ratio = self.policy_evaluate()
                     self.policy_value_net.save_model('model/current_policy.model')
                     if win_ratio > self.best_win_ratio:
-                        self.logger.info('update new best policy')
+                        self.logger.info('update new best policy, win_ratio:', win_ratio)
                         self.best_win_ratio = win_ratio
                         # update the best_policy
                         self.policy_value_net.save_model('model/best_policy.model')

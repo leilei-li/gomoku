@@ -21,7 +21,9 @@ def softmax(x):
 class TreeNode:
     """
     蒙特卡洛树的树结点的类,
-    每个结点用自己的Q值，先验概率P，访问计数值(visit-count-adjusted prior score)u
+    每个结点用自己的Q值，先验概率P，访问计数值(visit-count-adjusted prior score):U
+    U值的计算公式：U(s,a)=c_{puct}P(s,a)\frac{\sqrt{\sum_bN(s,b)}}{1+N(s,a)}
+    详情可以参考Alphazero的论文
     """
 
     def __init__(self, parent, prior_p):

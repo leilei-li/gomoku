@@ -104,4 +104,4 @@ class Game:
                         print("Game end. Winner is player:", winner)
                     else:
                         print("Game end. Tie")
-                return winner, zip(states, mcts_probs, winners_z)
+                return winner, zip(states, mcts_probs, winners_z)  # 返回当前的状态空间S，转移概率矩阵d，奖励R

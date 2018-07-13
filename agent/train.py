@@ -191,6 +191,7 @@ class TrainPipeline:
                                            self.episode_len,
                                            self.loss_to_show,
                                            self.entropy_to_show))
+                # 数据量达到要求数目，就可以开始训练了
                 if len(self.data_buffer) > self.batch_size:
                     loss, entropy = self.policy_update()
                 if (i + 1) % self.check_freq == 0:

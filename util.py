@@ -60,12 +60,10 @@ def init_logger(name, path=None, level=(logging.DEBUG, logging.INFO)):
     logger.propagate = 0
     _nf = ['[%(asctime)s]',
            '[%(name)s]',
-           '[%(filename)20s:%(funcName)15s:%(lineno)5d]',
            '[%(levelname)s]',
            ' %(message)s']
     _cf = ['$GREEN[%(asctime)s]$RESET',
            '[%(name)s]',
-           '$BLUE[%(filename)20s:%(funcName)15s:%(lineno)5d]$RESET',
            '[%(levelname)s]',
            ' $CYAN%(message)s$RESET']
     nformatter = logging.Formatter('-'.join(_nf))

@@ -149,3 +149,9 @@ class Board:
 
     def get_current_player(self):
         return self.current_player
+
+
+if __name__ == '__main__':
+    b = Board(width=8, height=8, n_in_row=5)
+    k = b.current_state()
+    2 == 3

@@ -95,6 +95,8 @@ class Game:
                 if winner != -1:
                     winners_z[np.array(current_players) == winner] = 1.0
                     winners_z[np.array(current_players) != winner] = -1.0
+                    # 当局胜利为1，失败为-1，平局为0
+                    # 这个分数代表的reward
                 # reset MCTS root node
                 player.reset_player()
                 if is_shown:

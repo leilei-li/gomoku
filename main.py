@@ -1,4 +1,6 @@
 from env.play_a_game import run
+from agent.train import TrainPipeline
 
 if __name__ == '__main__':
-    run(model_file='agent/best_policy.model', width=5, height=5, n=3)
+    training_pipeline = TrainPipeline(8, 8, 5)
+    training_pipeline.run()

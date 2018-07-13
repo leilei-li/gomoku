@@ -1,4 +1,4 @@
-import random
+import random, time
 import numpy as np
 from collections import defaultdict, deque
 from env.board import Board
@@ -6,6 +6,7 @@ from env.game import Game
 from agent.mcts_pure import MCTSPlayer as MCTS_Pure
 from player.MCTS_player import MCTSPlayer
 from agent.policy_value_net_tensorflow import PolicyValueNet
+from util import *
 
 
 class TrainPipeline:
@@ -51,6 +52,18 @@ class TrainPipeline:
 
         self.mcts_player = MCTSPlayer(self.policy_value_net.policy_value_fn, c_puct=self.c_puct,
                                       n_playout=self.n_playout, is_selfplay=1)
+
+        self.logger = self.init_log()
+
+    def init_log(self):
+        """
+            初始化日志
+        :return:
+        """
+        cur_time = time.strftime('%m%d-%H:%M:%S', time.localtime(time.time()))
+        logger_name = str(cur_time)
+        logger = init_logger(name=logger_name)
+        return logger
 
     def get_equi_data(self, play_data):
         """
@@ -155,10 +168,11 @@ class TrainPipeline:
         for i in range(n_games):
             winner = self.game.start_play(current_mcts_player, pure_mcts_player, start_player=i % 2, is_shown=0)
             win_cnt[winner] = win_cnt[winner] + 1
+            self.logger.info('round:{}\t, winner:{} '.format(i, winner))
         win_ratio = 1.0 * (win_cnt[1] + 0.5 * win_cnt[-1]) / n_games
-        print("num_playouts:{}, win: {}, lose: {}, tie:{}".format(
-            self.pure_mcts_playout_num,
-            win_cnt[1], win_cnt[2], win_cnt[-1]))
+        self.logger.info(
+            "num_playouts:{}, win: {}, lose: {}, tie:{}".format(self.pure_mcts_playout_num, win_cnt[1], win_cnt[2],
+                                                                win_cnt[-1]))
         return win_ratio
 
     def run(self):
@@ -169,22 +183,22 @@ class TrainPipeline:
         try:
             for i in range(self.game_batch_num):
                 self.collect_selfplay_data(self.play_batch_size)
-                print(("batch i:{},\t"
-                       "episode_len:{},\t"
-                       "loss:{:.8f},\t"
-                       "entropy:{:.8f},"
-                       ).format(i + 1,
-                                self.episode_len,
-                                self.loss_to_show,
-                                self.entropy_to_show))
+                self.logger.info(("batch i:{},\t"
+                                  "episode_len:{},\t"
+                                  "loss:{:.8f},\t"
+                                  "entropy:{:.8f},"
+                                  ).format(i + 1,
+                                           self.episode_len,
+                                           self.loss_to_show,
+                                           self.entropy_to_show))
                 if len(self.data_buffer) > self.batch_size:
                     loss, entropy = self.policy_update()
                 if (i + 1) % self.check_freq == 0:
-                    print("current self-play batch: {}".format(i + 1))
+                    self.logger.info("current self-play batch: {}".format(i + 1))
                     win_ratio = self.policy_evaluate()
                     self.policy_value_net.save_model('model/current_policy.model')
                     if win_ratio > self.best_win_ratio:
-                        print("New best policy!!!!!!!!")
+                        self.logger.info('update new best policy')
                         self.best_win_ratio = win_ratio
                         # update the best_policy
                         self.policy_value_net.save_model('model/best_policy.model')
@@ -194,6 +208,7 @@ class TrainPipeline:
                             self.best_win_ratio = 0.0
         except KeyboardInterrupt:
             print('\n\rquit')
+            self.logger.info('\n\rquit')
 
 
 if __name__ == '__main__':

@@ -208,7 +208,6 @@ class TrainPipeline:
                             self.pure_mcts_playout_num += 1000
                             self.best_win_ratio = 0.0
         except KeyboardInterrupt:
-            print('\n\rquit')
             self.logger.info('quit')
 
 

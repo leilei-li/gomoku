@@ -7,7 +7,7 @@ from agent.policy_value_net_tensorflow import PolicyValueNet
 from agent.policy_value_net_numpy import PolicyValueNetNumpy
 
 
-def run(model_file, width=8, height=8, n=5):
+def run(model_file=None, width=8, height=8, n=5):
     n = n
     width = width
     height = height
